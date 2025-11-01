@@ -36,17 +36,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getUsers } from "@/services/user";
+import { UserItem } from "@/types/user";
 
-const data: Payment[] = [];
-
-export type Payment = {
-  id: string;
-  amount: number;
-  status: "pending" | "processing" | "success" | "failed";
-  email: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<UserItem>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -72,9 +64,7 @@ export const columns: ColumnDef<Payment>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
@@ -91,7 +81,7 @@ export const columns: ColumnDef<Payment>[] = [
     },
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
- {
+  {
     accessorKey: "createdAt",
     header: ({ column }) => {
       return (
@@ -104,9 +94,11 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("createdAt")}</div>,
- },
- {
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("createdAt")}</div>
+    ),
+  },
+  {
     accessorKey: "updatedAt",
     header: ({ column }) => {
       return (
@@ -119,15 +111,16 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("updatedAt")}</div>,
- },
- 
- 
+    cell: ({ row }) => (
+      <div className="lowercase">{row.getValue("updatedAt")}</div>
+    ),
+  },
+
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const user = row.original;
 
       return (
         <DropdownMenu>
@@ -138,15 +131,15 @@ export const columns: ColumnDef<Payment>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>View</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(user._id)}
             >
-              Copy payment ID
+              create
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -162,7 +155,7 @@ export default function UserListView() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState<UserItem[]>([]);
 
   React.useEffect(() => {
     fetchUsers();
