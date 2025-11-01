@@ -1,7 +1,9 @@
+import UserNewEditView from "../user-new-edit-form";
+
 export default function UserCreateView() {
   return (
-    <div>
-      <h1>User Create View</h1>
+    <div className="container mx-auto">
+     <UserNewEditView/>
     </div>
   );
 }
